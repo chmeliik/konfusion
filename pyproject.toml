@@ -13,7 +13,7 @@ license = {text = "GPLv3+"}
 authors = [
     {name = "Adam Cmiel", email = "acmiel@redhat.com"},
 ]
-dependencies = []
+dependencies = ["konfucian"]
 
 [project.scripts]
 konfusion = "konfusion.main:main"
@@ -25,6 +25,13 @@ dev = [
     "pytest>=8.4.1",
     "ruff>=0.12.1",
 ]
+
+
+[tool.uv.sources]
+konfucian = {workspace = true}
+
+[tool.uv.workspace]
+members = ["packages/konfucian"]
 
 
 [tool.pyright]
@@ -59,7 +66,7 @@ ignore = [
 ]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/*" = [
+"**/tests/*" = [
     "S101", # assert
 ]
 

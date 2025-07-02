@@ -2,6 +2,12 @@ version = 1
 revision = 2
 requires-python = ">=3.12"
 
+[manifest]
+members = [
+    "konfucian",
+    "konfusion",
+]
+
 [[package]]
 name = "colorama"
 version = "0.4.6"
@@ -21,9 +27,17 @@ wheels = [
 ]
 
 [[package]]
+name = "konfucian"
+version = "0.1.0"
+source = { editable = "packages/konfucian" }
+
+[[package]]
 name = "konfusion"
 version = "0.1.0"
 source = { editable = "." }
+dependencies = [
+    { name = "konfucian" },
+]
 
 [package.dev-dependencies]
 dev = [
@@ -33,6 +47,7 @@ dev = [
 ]
 
 [package.metadata]
+requires-dist = [{ name = "konfucian", editable = "packages/konfucian" }]
 
 [package.metadata.requires-dev]
 dev = [

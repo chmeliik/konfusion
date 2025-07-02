@@ -3,6 +3,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
+from konfucian.imageref import ImageRef
+
 from konfusion.cli import CliCommand
 
 if TYPE_CHECKING:
@@ -27,13 +29,13 @@ class ApplyTags(CliCommand):
     """
 
     tags: list[str]
-    to_image: str
+    to_image: ImageRef
 
     @classmethod
     def setup_parser(cls, parser: argparse.ArgumentParser) -> None:
         super().setup_parser(parser)
         parser.add_argument("--tags", nargs="+", required=True)
-        parser.add_argument("--to-image", required=True)
+        parser.add_argument("--to-image", required=True, type=ImageRef.parse)
 
     def run(self) -> None:
-        print(f"applying tags {self.tags} to image {self.to_image}")
+        print(f"applying tags {self.tags} to {self.to_image!r}")

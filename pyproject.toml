@@ -61,3 +61,10 @@ ignore = [
 "tests/*" = [
     "S101", # assert
 ]
+
+[tool.ruff.lint.isort]
+required-imports = [
+    # Enable deferred evaluation of annotations. This avoids the need for importing
+    # all types at runtime and the need for "stringifying" some annotations.
+    "from __future__ import annotations",
+]

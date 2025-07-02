@@ -22,6 +22,7 @@ konfusion = "konfusion.main:main"
 [dependency-groups]
 dev = [
     "pyright>=1.1.402",
+    "pytest>=8.4.1",
     "ruff>=0.12.1",
 ]
 
@@ -68,3 +69,7 @@ required-imports = [
     # all types at runtime and the need for "stringifying" some annotations.
     "from __future__ import annotations",
 ]
+
+
+[tool.pytest.ini_options]
+addopts = ["--doctest-modules"]

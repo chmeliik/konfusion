@@ -45,9 +45,21 @@ make autofix
   a good chance you use pyright (in case of VSCode - [pylance], based on pyright).
   To better align with your editor experience, we use pyright for type-checking.
 
+### Tests
+
+We use [pytest] for all our tests, including [doctests][pytest-doctest].
+
+To run tests locally, use:
+
+```bash
+make test
+```
+
 [uv]: https://docs.astral.sh/uv/
 [ty]: https://github.com/astral-sh/ty
 [ruff]: https://docs.astral.sh/ruff/
 [mypy]: https://mypy.readthedocs.io/en/stable/
 [pylance]: https://marketplace.visualstudio.com/items?itemName=ms-python.vscode-pylance
 [pyright]: https://microsoft.github.io/pyright/#/
+[pytest]: https://docs.pytest.org/en/stable/
+[pytest-doctest]: https://docs.pytest.org/en/stable/how-to/doctest.html

@@ -19,3 +19,7 @@ format: .venv
 .PHONY: autofix
 autofix: .venv
 	uv run ruff check --fix
+
+.PHONY: test
+test: .venv
+	pytest

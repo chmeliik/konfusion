@@ -22,9 +22,42 @@ konfusion = "konfusion.main:main"
 [dependency-groups]
 dev = [
     "pyright>=1.1.402",
+    "ruff>=0.12.1",
 ]
 
 
 [tool.pyright]
 # https://microsoft.github.io/pyright/#/configuration
 typeCheckingMode = "strict"
+
+
+[tool.ruff.lint]
+select = [
+    # https://docs.astral.sh/ruff/rules/
+    "ANN",  # flake8-annotations
+    "S",    # flake8-bandit
+    "B",    # flake8-bugbear
+    "DTZ",  # flake8-datetimez
+    "LOG",  # flake8-logging
+    "G",    # flake8-logging-format
+    "TC",   # flake8-type-checking
+    "ARG",  # flake8-unused-arguments
+    "PTH",  # flake8-use-pathlib
+    "I",    # isort
+    "N",    # pep8-naming
+    "E",    # pycodestyle error
+    "W",    # pycodestyle warning
+    "F",    # pyflakes
+    "PLE",  # pylint error
+    "PLW",  # pylint warning
+    "UP",   # pyupgrade
+    "RUF",  # ruff
+]
+ignore = [
+    "E501", # line-too-long (auto-formatting takes care of the cases we care about)
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = [
+    "S101", # assert
+]

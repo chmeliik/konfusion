@@ -8,4 +8,14 @@ default: .venv
 
 .PHONY: check
 check: .venv
+	.venv/bin/ruff check
+	.venv/bin/ruff format --check --diff
 	source .venv/bin/activate && pyright
+
+.PHONY: format
+format: .venv
+	.venv/bin/ruff format
+
+.PHONY: autofix
+autofix: .venv
+	.venv/bin/ruff check --fix

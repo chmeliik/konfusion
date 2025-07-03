@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
@@ -8,6 +9,8 @@ from konfusion.lib.imageref import ImageRef
 
 if TYPE_CHECKING:
     import argparse
+
+log = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -37,4 +40,4 @@ class ApplyTags(CliCommand):
         parser.add_argument("--to-image", required=True, type=ImageRef.parse)
 
     def run(self) -> None:
-        print(f"applying tags {self.tags} to {self.to_image!r}")
+        log.info("applying tags %r to %r", self.tags, self.to_image)

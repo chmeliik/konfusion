@@ -2,15 +2,18 @@ from __future__ import annotations
 
 import argparse
 import importlib.metadata
+import logging
 from types import ModuleType
 from typing import Any, TypeGuard
 
 from konfusion.cli import CliCommand
+from konfusion.logs import setup_logging
+
+log = logging.getLogger(__name__)
 
 
 def load_commands() -> dict[str, type[CliCommand]]:
     """Load CLI commands from packages that provide 'konfusion.commands' entrypoints."""
-    entrypoints = importlib.metadata.entry_points(group="konfusion.commands")
 
     def is_cli_command(obj: Any) -> TypeGuard[type[CliCommand]]:  # noqa: ANN401
         return (
@@ -19,13 +22,8 @@ def load_commands() -> dict[str, type[CliCommand]]:
             and obj is not CliCommand
         )
 
-    def get_command(
-        entrypoint: importlib.metadata.EntryPoint,
-    ) -> type[CliCommand] | None:
-        try:
-            obj = entrypoint.load()
-        except ImportError:
-            return None
+    def get_command(entrypoint: importlib.metadata.EntryPoint) -> type[CliCommand]:
+        obj = entrypoint.load()
 
         if is_cli_command(obj):
             return obj
@@ -33,26 +31,37 @@ def load_commands() -> dict[str, type[CliCommand]]:
             commands = [attr for attr in vars(obj).values() if is_cli_command(attr)]
             if len(commands) == 1:
                 return commands[0]
+            else:
+                msg = f"Expected to find 1 CliCommand subclass, found {len(commands)}"
+                raise ValueError(msg)
+        else:
+            raise ValueError(f"Unsupported object type: {obj!r}")
 
-        # TODO: log unsuccessful cmd loading
-        return None
+    commands: dict[str, type[CliCommand]] = {}
+    for entrypoint in importlib.metadata.entry_points(group="konfusion.commands"):
+        try:
+            commands[entrypoint.name] = get_command(entrypoint)
+        except Exception as e:
+            log.warning(
+                "Failed to load command %s from %s: %r",
+                entrypoint.name,
+                entrypoint.value,
+                e,
+            )
 
-    return {
-        entrypoint.name: cmd
-        for entrypoint in entrypoints
-        if (cmd := get_command(entrypoint)) is not None
-    }
+    return commands
 
 
-def get_parser() -> argparse.ArgumentParser:
+def get_parser(loaded_commands: dict[str, type[CliCommand]]) -> argparse.ArgumentParser:
     """Build the CLI parser."""
     parser = argparse.ArgumentParser()
+
     subcommands = parser.add_subparsers(title="subcommands", required=True)
 
     def add_subcommand(name: str, cmd: type[CliCommand]) -> None:
         cmd.setup_parser(subcommands.add_parser(name, help=cmd.help()))
 
-    for name, cmd_type in load_commands().items():
+    for name, cmd_type in loaded_commands.items():
         add_subcommand(name, cmd_type)
 
     return parser
@@ -60,8 +69,16 @@ def get_parser() -> argparse.ArgumentParser:
 
 def main() -> None:
     """Run Konfusion."""
-    parser = get_parser()
+    setup_logging(logging.INFO, ["konfusion"])
+
+    loaded_commands = load_commands()
+    parser = get_parser(loaded_commands)
     args = parser.parse_args()
+
+    setup_logging(
+        logging.INFO,
+        (cmd.__module__ for cmd in loaded_commands.values()),
+    )
 
     cmd_type: type[CliCommand] = args.cmd
     cmd = cmd_type.from_parsed_args(args)

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from dataclasses import dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING
@@ -9,6 +10,8 @@ from konfusion.lib.imageref import ImageRef
 
 if TYPE_CHECKING:
     from argparse import ArgumentParser
+
+log = logging.getLogger(__name__)
 
 
 @dataclass(frozen=True, kw_only=True)
@@ -36,4 +39,4 @@ class PushContainerfile(CliCommand):
 
     def run(self) -> None:
         for k, v in vars(self).items():
-            print(f"{k}={v}")
+            log.info("%s=%s", k, v)

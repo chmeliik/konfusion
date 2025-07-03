@@ -4,9 +4,8 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-from konfucian.imageref import ImageRef
-
 from konfusion.cli import CliCommand
+from konfusion.lib.imageref import ImageRef
 
 if TYPE_CHECKING:
     from argparse import ArgumentParser

@@ -3,9 +3,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
 
-from konfucian.imageref import ImageRef
-
 from konfusion.cli import CliCommand
+from konfusion.lib.imageref import ImageRef
 
 if TYPE_CHECKING:
     import argparse

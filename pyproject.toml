@@ -13,7 +13,7 @@ license = {text = "GPLv3+"}
 authors = [
     {name = "Adam Cmiel", email = "acmiel@redhat.com"},
 ]
-dependencies = ["konfucian"]
+dependencies = []
 
 [project.optional-dependencies]
 build-commands = ["konfusion-build-commands"]
@@ -31,7 +31,6 @@ dev = [
 
 
 [tool.uv.sources]
-konfucian = {workspace = true}
 konfusion = {workspace = true}
 konfusion-build-commands = {workspace = true}
 

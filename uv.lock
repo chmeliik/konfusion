@@ -4,7 +4,6 @@ requires-python = ">=3.12"
 
 [manifest]
 members = [
-    "konfucian",
     "konfusion",
     "konfusion-build-commands",
 ]
@@ -28,17 +27,9 @@ wheels = [
 ]
 
 [[package]]
-name = "konfucian"
-version = "0.1.0"
-source = { editable = "packages/konfucian" }
-
-[[package]]
 name = "konfusion"
 version = "0.1.0"
 source = { editable = "." }
-dependencies = [
-    { name = "konfucian" },
-]
 
 [package.optional-dependencies]
 build-commands = [
@@ -53,10 +44,7 @@ dev = [
 ]
 
 [package.metadata]
-requires-dist = [
-    { name = "konfucian", editable = "packages/konfucian" },
-    { name = "konfusion-build-commands", marker = "extra == 'build-commands'", editable = "packages/konfusion-build-commands" },
-]
+requires-dist = [{ name = "konfusion-build-commands", marker = "extra == 'build-commands'", editable = "packages/konfusion-build-commands" }]
 provides-extras = ["build-commands"]
 
 [package.metadata.requires-dev]
@@ -71,15 +59,11 @@ name = "konfusion-build-commands"
 version = "0.1.0"
 source = { editable = "packages/konfusion-build-commands" }
 dependencies = [
-    { name = "konfucian" },
     { name = "konfusion" },
 ]
 
 [package.metadata]
-requires-dist = [
-    { name = "konfucian", editable = "packages/konfucian" },
-    { name = "konfusion", editable = "." },
-]
+requires-dist = [{ name = "konfusion", editable = "." }]
 
 [[package]]
 name = "nodeenv"

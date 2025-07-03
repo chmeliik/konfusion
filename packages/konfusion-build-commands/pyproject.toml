@@ -13,7 +13,7 @@ license = {text = "GPLv3+"}
 authors = [
     {name = "Adam Cmiel", email = "acmiel@redhat.com"},
 ]
-dependencies = ["konfusion", "konfucian"]
+dependencies = ["konfusion"]
 
 [project.entry-points."konfusion.commands"]
 apply-tags = "konfusion_build_commands.apply_tags"

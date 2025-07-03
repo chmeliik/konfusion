@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 import pytest
-from konfucian.imageref import ImageRef
+
+from konfusion.lib.imageref import ImageRef
 
 
 @pytest.mark.parametrize(

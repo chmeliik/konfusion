@@ -2,18 +2,18 @@ from __future__ import annotations
 
 import abc
 import argparse
+import dataclasses
 import textwrap
-from dataclasses import dataclass
 from typing import Self
 
 
-@dataclass(frozen=True, kw_only=True)
+@dataclasses.dataclass(frozen=True, kw_only=True)
 class CliCommand(abc.ABC):
     """Base class for CLI commands.
 
     Example usage:
 
-    >>> @dataclass(frozen=True, kw_only=True)
+    >>> @dataclasses.dataclass(frozen=True, kw_only=True)
     ... class MyCommand(CliCommand):
     ...     flag: bool
     ...     maybe_string: str | None
@@ -93,8 +93,8 @@ class CliCommand(abc.ABC):
     @classmethod
     def from_parsed_args(cls, args: argparse.Namespace) -> Self:
         """Instantiate this command from a "Namespace" of parsed arguments."""
-        kwargs = vars(args)
-        kwargs.pop("cmd")
+        known_args = {field.name for field in dataclasses.fields(cls)}
+        kwargs = {k: v for k, v in vars(args).items() if k in known_args}
         return cls(**kwargs)
 
     @abc.abstractmethod

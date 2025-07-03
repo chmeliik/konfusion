@@ -55,6 +55,9 @@ def load_commands() -> dict[str, type[CliCommand]]:
 def get_parser(loaded_commands: dict[str, type[CliCommand]]) -> argparse.ArgumentParser:
     """Build the CLI parser."""
     parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--log-level", choices=["DEBUG", "INFO", "WARNING", "ERROR"], default="INFO"
+    )
 
     subcommands = parser.add_subparsers(title="subcommands", required=True)
 
@@ -69,15 +72,17 @@ def get_parser(loaded_commands: dict[str, type[CliCommand]]) -> argparse.Argumen
 
 def main() -> None:
     """Run Konfusion."""
+    # Setup logging first so that we can log messages when we fail to load a command
     setup_logging(logging.INFO, ["konfusion"])
-
     loaded_commands = load_commands()
+
     parser = get_parser(loaded_commands)
     args = parser.parse_args()
 
+    # Re-setup logging for konfusion and all loaded modules after parsing args
     setup_logging(
-        logging.INFO,
-        (cmd.__module__ for cmd in loaded_commands.values()),
+        args.log_level,
+        ["konfusion", *(cmd.__module__ for cmd in loaded_commands.values())],
     )
 
     cmd_type: type[CliCommand] = args.cmd

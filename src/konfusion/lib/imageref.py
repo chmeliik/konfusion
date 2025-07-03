@@ -1,11 +1,11 @@
 from __future__ import annotations
 
+import dataclasses
 import re
-from dataclasses import dataclass
 from typing import Self
 
 
-@dataclass(frozen=True)
+@dataclasses.dataclass(frozen=True)
 class ImageRef:
     """Represents a container image reference.
 
@@ -46,3 +46,6 @@ class ImageRef:
             tag = None
 
         return cls(repo, tag, digest)
+
+    def replace(self, **changes: str | None) -> Self:
+        return dataclasses.replace(self, **changes)

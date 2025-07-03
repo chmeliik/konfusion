@@ -4,7 +4,7 @@ default: .venv
 
 .PHONY: .venv
 .venv:
-	uv sync --group dev --python $(PYTHON_VERSION)
+	uv sync --group dev --extra build-commands --python $(PYTHON_VERSION)
 
 .PHONY: check
 check: .venv

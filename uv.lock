@@ -6,6 +6,7 @@ requires-python = ">=3.12"
 members = [
     "konfucian",
     "konfusion",
+    "konfusion-build-commands",
 ]
 
 [[package]]
@@ -39,6 +40,11 @@ dependencies = [
     { name = "konfucian" },
 ]
 
+[package.optional-dependencies]
+build-commands = [
+    { name = "konfusion-build-commands" },
+]
+
 [package.dev-dependencies]
 dev = [
     { name = "pyright" },
@@ -47,13 +53,32 @@ dev = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "konfucian", editable = "packages/konfucian" }]
+requires-dist = [
+    { name = "konfucian", editable = "packages/konfucian" },
+    { name = "konfusion-build-commands", marker = "extra == 'build-commands'", editable = "packages/konfusion-build-commands" },
+]
+provides-extras = ["build-commands"]
 
 [package.metadata.requires-dev]
 dev = [
     { name = "pyright", specifier = ">=1.1.402" },
     { name = "pytest", specifier = ">=8.4.1" },
     { name = "ruff", specifier = ">=0.12.1" },
+]
+
+[[package]]
+name = "konfusion-build-commands"
+version = "0.1.0"
+source = { editable = "packages/konfusion-build-commands" }
+dependencies = [
+    { name = "konfucian" },
+    { name = "konfusion" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "konfucian", editable = "packages/konfucian" },
+    { name = "konfusion", editable = "." },
 ]
 
 [[package]]

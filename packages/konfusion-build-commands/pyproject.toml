@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+
+[project]
+name = "konfusion-build-commands"
+version = "0.1.0"
+description = "Konflux Build subcommands for Konfusion."
+readme = "README.md"
+requires-python = ">=3.12"
+license = {text = "GPLv3+"}
+authors = [
+    {name = "Adam Cmiel", email = "acmiel@redhat.com"},
+]
+dependencies = ["konfusion", "konfucian"]
+
+[project.entry-points."konfusion.commands"]
+push-containerfile = "konfusion_build_commands.push_containerfile"

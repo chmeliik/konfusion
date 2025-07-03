@@ -15,6 +15,9 @@ authors = [
 ]
 dependencies = ["konfucian"]
 
+[project.optional-dependencies]
+build-commands = ["konfusion-build-commands"]
+
 [project.scripts]
 konfusion = "konfusion.main:main"
 
@@ -29,9 +32,11 @@ dev = [
 
 [tool.uv.sources]
 konfucian = {workspace = true}
+konfusion = {workspace = true}
+konfusion-build-commands = {workspace = true}
 
 [tool.uv.workspace]
-members = ["packages/konfucian"]
+members = ["packages/*"]
 
 
 [tool.pyright]

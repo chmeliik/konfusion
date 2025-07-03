@@ -16,4 +16,5 @@ authors = [
 dependencies = ["konfusion", "konfucian"]
 
 [project.entry-points."konfusion.commands"]
+apply-tags = "konfusion_build_commands.apply_tags"
 push-containerfile = "konfusion_build_commands.push_containerfile"

@@ -6,7 +6,6 @@ from types import ModuleType
 from typing import Any, TypeGuard
 
 from konfusion.cli import CliCommand
-from konfusion.cmd.apply_tags import ApplyTags
 
 
 def load_commands() -> dict[str, type[CliCommand]]:
@@ -52,8 +51,6 @@ def get_parser() -> argparse.ArgumentParser:
 
     def add_subcommand(name: str, cmd: type[CliCommand]) -> None:
         cmd.setup_parser(subcommands.add_parser(name, help=cmd.help()))
-
-    add_subcommand("apply-tags", ApplyTags)
 
     for name, cmd_type in load_commands().items():
         add_subcommand(name, cmd_type)

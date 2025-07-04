@@ -21,7 +21,7 @@ class Skopeo(CliTool):
 
     def copy(self, source: ImageRef, dest: ImageRef, *additional_args: str) -> None:
         """Run 'skopeo copy ...'."""
-        return self.run(
+        self.run_with_logging(
             [
                 "copy",
                 *additional_args,
@@ -32,7 +32,7 @@ class Skopeo(CliTool):
 
     def inspect_format(self, image: ImageRef, format: str) -> str:
         """Run 'skopeo inspect --format ...'."""
-        return self.get_output(
+        return self.run_with_logging(
             [
                 "inspect",
                 "--no-tags",
@@ -40,7 +40,7 @@ class Skopeo(CliTool):
                 format,
                 f"docker://{self._adjust_image(image)}",
             ]
-        ).rstrip("\n")
+        ).stdout.rstrip("\n")
 
     def _adjust_image(self, image: ImageRef) -> ImageRef:
         if image.digest:

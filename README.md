@@ -55,6 +55,13 @@ To run tests locally, use:
 make test
 ```
 
+Or run `pytest` directly to make use of its full power:
+
+```bash
+source .venv/bin/activate
+pytest --stepwise -vvv
+```
+
 [uv]: https://docs.astral.sh/uv/
 [ty]: https://github.com/astral-sh/ty
 [ruff]: https://docs.astral.sh/ruff/

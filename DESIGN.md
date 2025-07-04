@@ -72,5 +72,65 @@ collecting that output.
 For added consistency and convenience, specific CLI tools can get their own subclasses,
 like [`src/konfusion/lib/tools/skopeo.py`](src/konfusion/lib/tools/skopeo.py).
 
+## Synergize well with Tekton
+
+Tekton allows users to pass array parameters. The only way to pass those arrays
+to a Task step is to pass them as the args to a command or script. Here's how
+the [buildah task][buildah-task] does it, for example:
+
+```yaml
+    args:
+      - --build-args
+      - $(params.BUILD_ARGS[*])
+      - --labels
+      - $(params.LABELS[*])
+      - --annotations
+      - $(params.ANNOTATIONS[*])
+```
+
+This results in Tekton running something like this:
+
+```bash
+bash -c "$buildah_script" \
+  --build-args foo=1 bar=2 \
+  --labels spam=3 eggs=4 \
+  --annotations ham=5 jam=6
+```
+
+Because `buildah` doesn't parse args like this natively, the script has to ugly parsing
+to prepare the arguments for consumption:
+
+```bash
+# Split `args` into two sets of arguments.
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --build-args)
+            shift
+            while [[ $# -gt 0 && $1 != --* ]]; do build_args+=("$1"); shift; done
+            ;;
+        --labels)
+            shift
+            while [[ $# -gt 0 && $1 != --* ]]; do LABELS+=("--label" "$1"); shift; done
+            ;;
+        --annotations)
+            shift
+            while [[ $# -gt 0 && $1 != --* ]]; do ANNOTATIONS+=("--annotation" "$1"); shift; done
+            ;;
+        *)
+            echo "unexpected argument: $1" >&2
+            exit 2
+            ;;
+    esac
+done
+```
+
+### ✅ `argparse` and `nargs=*`
+
+With Python's argparse and its [`nargs`][nargs], we can parse this style of arguments
+natively without any trouble.
+See [`packages/konfusion-build-commands/src/konfusion_build_commands/apply_tags.py`](packages/konfusion-build-commands/src/konfusion_build_commands/apply_tags.py).
+
 [build-definitions]: https://github.com/konflux-ci/build-definitions
 [entrypoints]: https://packaging.python.org/en/latest/guides/creating-and-discovering-plugins/
+[buildah-task]: https://github.com/konflux-ci/build-definitions/tree/main/task/buildah
+[nargs]: https://docs.python.org/3/library/argparse.html#nargs

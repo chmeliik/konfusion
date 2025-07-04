@@ -2,6 +2,10 @@
 
 Konflux Fusion. CLI for implementing CI tasks. No confusion.
 
+## Design
+
+See [DESIGN.md](DESIGN.md).
+
 ## Development
 
 Start by installing `make` and [`uv`][uv]. E.g.:

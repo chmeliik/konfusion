@@ -40,7 +40,7 @@ class Skopeo(CliTool):
                 format,
                 f"docker://{self._adjust_image(image)}",
             ]
-        ).stdout.rstrip("\n")
+        ).stdout
 
     def _adjust_image(self, image: ImageRef) -> ImageRef:
         if image.digest:

@@ -28,7 +28,7 @@ wheels = [
 
 [[package]]
 name = "konfusion"
-version = "0.1.0"
+version = "0.1.0.dev1"
 source = { editable = "." }
 
 [package.optional-dependencies]
@@ -56,7 +56,7 @@ dev = [
 
 [[package]]
 name = "konfusion-build-commands"
-version = "0.1.0"
+version = "0.1.0.dev1"
 source = { editable = "packages/konfusion-build-commands" }
 dependencies = [
     { name = "konfusion" },

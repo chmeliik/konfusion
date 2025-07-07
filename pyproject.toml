@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "konfusion"
-version = "0.1.0"
+version = "0.1.0.dev1"
 description = "Konflux Fusion. CLI for implementing CI tasks. No confusion."
 readme = "README.md"
 requires-python = ">=3.12"

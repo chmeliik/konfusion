@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "konfusion-build-commands"
-version = "0.1.0"
+version = "0.1.0.dev1"
 description = "Konflux Build subcommands for Konfusion."
 readme = "README.md"
 requires-python = ">=3.12"

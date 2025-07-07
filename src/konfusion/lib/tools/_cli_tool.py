@@ -58,6 +58,9 @@ class CliTool:
         stdout_handler = _PipeHandler(stdout_pipe, stdout_callback)
         stderr_handler = _PipeHandler(stderr_pipe, stderr_callback)
 
+        # Thread-based approach, inspired by:
+        #   * a suggestion from Gemini
+        #   * the CPython stdlib: https://github.com/python/cpython/blob/cb99d992774b67761441e122965ed056bac09241/Lib/subprocess.py#L1617
         _run_handlers([stdout_handler, stderr_handler])
 
         returncode = process.wait()

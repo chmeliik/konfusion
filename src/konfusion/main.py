@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import importlib.metadata
+import io
 import logging
 from types import ModuleType
 from typing import Any, TypeGuard
@@ -52,20 +53,41 @@ def load_commands() -> dict[str, type[CliCommand]]:
     return commands
 
 
+def version_str(loaded_commands: dict[str, type[CliCommand]]) -> str:
+    f = io.StringIO()
+    print("konfusion", importlib.metadata.version("konfusion"), file=f)
+    print("\nsubcommands:", file=f)
+
+    if loaded_commands:
+        for cmd_name, cmd_type in loaded_commands.items():
+            module, _, _ = cmd_type.__module__.partition(".")
+            version = importlib.metadata.version(module)
+            print(f"  {cmd_name} ({module} {version})", file=f)
+    else:
+        print("  <none loaded>", file=f)
+
+    return f.getvalue()
+
+
 def get_parser(loaded_commands: dict[str, type[CliCommand]]) -> argparse.ArgumentParser:
     """Build the CLI parser."""
     parser = argparse.ArgumentParser()
+    parser.formatter_class = argparse.RawDescriptionHelpFormatter
+
     parser.add_argument(
         "--log-level", choices=["DEBUG", "INFO", "WARNING", "ERROR"], default="INFO"
     )
-
-    subcommands = parser.add_subparsers(title="subcommands", required=True)
+    parser.add_argument(
+        "--version", action="version", version=version_str(loaded_commands)
+    )
 
     def add_subcommand(name: str, cmd: type[CliCommand]) -> None:
         cmd.setup_parser(subcommands.add_parser(name, help=cmd.help()))
 
-    for name, cmd_type in loaded_commands.items():
-        add_subcommand(name, cmd_type)
+    if loaded_commands:
+        subcommands = parser.add_subparsers(title="subcommands", required=True)
+        for name, cmd_type in loaded_commands.items():
+            add_subcommand(name, cmd_type)
 
     return parser
 

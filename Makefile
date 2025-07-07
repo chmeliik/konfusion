@@ -23,3 +23,7 @@ autofix: .venv
 .PHONY: test
 test: .venv
 	pytest
+
+.PHONY: requirements.txt
+requirements.txt:
+	uv export --frozen --all-packages --no-dev --no-emit-workspace -o requirements.txt

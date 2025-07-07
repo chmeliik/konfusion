@@ -24,6 +24,14 @@ make .venv
 source .venv/bin/activate
 ```
 
+Play with `konfusion`:
+
+```bash
+konfusion --help
+konfusion --version
+konfusion apply-tags --tags v1 v1.0 --to-image quay.io/my-org/my-image:latest
+```
+
 ### Static checks
 
 * [pyright] for type-checking[^why-pyright]

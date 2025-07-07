@@ -38,7 +38,7 @@ class ApplyTags(CliCommand):
     @classmethod
     def setup_parser(cls, parser: argparse.ArgumentParser) -> None:
         super().setup_parser(parser)
-        parser.add_argument("--tags", nargs="+", required=True)
+        parser.add_argument("--tags", nargs="*", default=[])
         parser.add_argument(
             "--to-image", dest="image", required=True, type=ImageRef.parse
         )

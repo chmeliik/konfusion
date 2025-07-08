@@ -4,6 +4,7 @@ import argparse
 import importlib.metadata
 import io
 import logging
+import sys
 from types import ModuleType
 from typing import Any, TypeGuard
 
@@ -100,6 +101,9 @@ def main() -> None:
 
     parser = get_parser(loaded_commands)
     args = parser.parse_args()
+
+    if not loaded_commands:
+        sys.exit("No subcommands loaded")
 
     # Re-setup logging for konfusion and all loaded modules after parsing args
     setup_logging(

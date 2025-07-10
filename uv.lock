@@ -6,6 +6,7 @@ requires-python = ">=3.12"
 members = [
     "konfusion",
     "konfusion-build-commands",
+    "konfusion-test-utils",
 ]
 
 [[package]]
@@ -38,6 +39,7 @@ build-commands = [
 
 [package.dev-dependencies]
 dev = [
+    { name = "konfusion-test-utils" },
     { name = "pyright" },
     { name = "pytest" },
     { name = "ruff" },
@@ -49,6 +51,7 @@ provides-extras = ["build-commands"]
 
 [package.metadata.requires-dev]
 dev = [
+    { name = "konfusion-test-utils", editable = "packages/konfusion-test-utils" },
     { name = "pyright", specifier = ">=1.1.402" },
     { name = "pytest", specifier = ">=8.4.1" },
     { name = "ruff", specifier = ">=0.12.1" },
@@ -64,6 +67,11 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [{ name = "konfusion", editable = "." }]
+
+[[package]]
+name = "konfusion-test-utils"
+version = "0.0.0"
+source = { editable = "packages/konfusion-test-utils" }
 
 [[package]]
 name = "nodeenv"

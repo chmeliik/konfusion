@@ -27,12 +27,14 @@ dev = [
     "pyright>=1.1.402",
     "pytest>=8.4.1",
     "ruff>=0.12.1",
+    "konfusion-test-utils"
 ]
 
 
 [tool.uv.sources]
 konfusion = {workspace = true}
 konfusion-build-commands = {workspace = true}
+konfusion-test-utils = {workspace = true}
 
 [tool.uv.workspace]
 members = ["packages/*"]
@@ -72,6 +74,9 @@ ignore = [
 [tool.ruff.lint.per-file-ignores]
 "**/tests/*" = [
     "S101", # assert
+]
+"packages/konfusion-test-utils/*" = [
+    "S603", # subprocess usage
 ]
 
 [tool.ruff.lint.isort]

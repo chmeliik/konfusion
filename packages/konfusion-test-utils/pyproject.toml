@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+
+[project]
+name = "konfusion-test-utils"
+version = "0.0.0"
+description = "Test utils intended to be used both by integration tests and by humans."
+readme = "README.md"
+requires-python = ">=3.12"
+license = {text = "Apache-2.0"}
+authors = [
+    {name = "Adam Cmiel", email = "acmiel@redhat.com"},
+]
+dependencies = []
+
+[project.scripts]
+konfusion-test-utils = "konfusion_test_utils.main:main"

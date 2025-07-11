@@ -65,21 +65,7 @@ def run_in_konfusion(args: argparse.Namespace) -> None:
     interactive: bool = args.interactive
 
     config = Config.load_from_env()
-
-    if config.konfusion_container_image:
-        konfusion = KonfusionContainer(config.konfusion_container_image, config)
-    else:
-        konfusion = KonfusionContainer.build_image(
-            image_name="localhost/konfusion:test",
-            konfusion_rootdir=Path.cwd(),
-            config=config,
-        )
-        log.info(
-            "To skip building the image, set TEST_KONFUSION_CONTAINER_IMAGE to an existing image"
-        )
-        log.info(
-            "E.g. 'export TEST_KONFUSION_CONTAINER_IMAGE=localhost/konfusion:latest'"
-        )
+    konfusion = KonfusionContainer.get(config, konfusion_rootdir=Path.cwd())
 
     podman_args = []
     if tty:

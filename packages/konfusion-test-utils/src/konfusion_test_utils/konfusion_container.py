@@ -25,13 +25,37 @@ class KonfusionContainer:
         return self._image_name
 
     @classmethod
+    def get(cls, config: Config, konfusion_rootdir: Path) -> Self:
+        if config.konfusion_container_image:
+            log.info(
+                "Using existing TEST_KONFUSION_CONTAINER_IMAGE=%s",
+                config.konfusion_container_image,
+            )
+            self = cls(config.konfusion_container_image, config)
+        else:
+            log.info(
+                "Building Konfusion container image (name=localhost/konfusion:test)"
+            )
+            self = cls.build_image(
+                image_name="localhost/konfusion:test",
+                konfusion_rootdir=konfusion_rootdir,
+                config=config,
+            )
+            log.info(
+                "To skip building the image, set TEST_KONFUSION_CONTAINER_IMAGE to an existing image"
+            )
+            log.info(
+                "E.g. 'export TEST_KONFUSION_CONTAINER_IMAGE=localhost/konfusion:latest'"
+            )
+        return self
+
+    @classmethod
     def build_image(
         cls,
         image_name: str,
         konfusion_rootdir: Path,
         config: Config,
     ) -> Self:
-        log.info("Building konfusion container image (name=%s)", image_name)
         subprocess.run(
             ["podman", "build", "--tag", image_name, konfusion_rootdir],
             check=True,

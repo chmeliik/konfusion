@@ -1,2 +1,14 @@
+__pycache__/
+
+Containerfile
+
+# Packaging
+*.egg-info/
+build/
+
+# All hidden directories and files
 .*
-__pycache__
+
+# Tests
+tests
+packages/konfusion-test-utils

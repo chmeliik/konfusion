@@ -67,7 +67,8 @@ class KonfusionContainer:
         cmd: Sequence[str | os.PathLike[str]],
         podman_args: Sequence[str | os.PathLike[str]] = (),
         check: bool = True,
-    ) -> subprocess.CompletedProcess[bytes]:
+        capture_output: bool = False,
+    ) -> subprocess.CompletedProcess[str]:
         podman_cmd: list[str | os.PathLike[str]] = [
             "podman",
             "run",
@@ -89,5 +90,15 @@ class KonfusionContainer:
         podman_cmd.append(self.image_name)
         podman_cmd.extend(cmd)
 
-        log.info("CMD: %s", shlex.join(map(str, podman_cmd)))
-        return subprocess.run(podman_cmd, check=check)
+        log.debug("%s", shlex.join(map(str, podman_cmd)))
+        proc = subprocess.run(
+            podman_cmd, check=check, capture_output=capture_output, text=True
+        )
+
+        if capture_output:
+            if stdout := proc.stdout.rstrip("\n"):
+                log.debug("stdout>\n%s", stdout)
+            if stderr := proc.stderr.rstrip("\n"):
+                log.error("stderr>\n%s", stderr)
+
+        return proc

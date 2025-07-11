@@ -22,7 +22,11 @@ autofix: .venv
 
 .PHONY: test
 test: .venv
-	pytest
+	pytest --ignore=tests/integration
+
+.PHONY: integration-test
+integration-test:
+	pytest tests/integration --log-cli-level DEBUG
 
 .PHONY: requirements.txt
 requirements.txt:

@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import json
 import logging
-import shutil
 import ssl
 import subprocess
 import time
@@ -69,12 +68,8 @@ class Zot:
 
     def run(self, restart: bool = False) -> None:
         """Run an instance of the Zot container registry in a podman container."""
-        podman = shutil.which("podman")
-        if not podman:
-            raise RuntimeError("'podman' executable not found in PATH")
-
         proc = subprocess.run(
-            [podman, "container", "exists", self._config.zot_container_name],
+            ["podman", "container", "exists", self._config.zot_container_name],
             check=False,
         )
         container_exists = proc.returncode == 0
@@ -99,7 +94,7 @@ class Zot:
         zot_config.zot_config_path().write_text(zot_config_json + "\n")
 
         cmd = [
-            podman,
+            "podman",
             "run",
             "--rm",
             "--detach",
@@ -181,10 +176,6 @@ class _ZotConfig:
 
 def _generate_ca_cert(ca_key_path: Path, ca_cert_path: Path) -> None:
     """Generate CA key+cert."""
-    openssl = shutil.which("openssl")
-    if not openssl:
-        raise RuntimeError("'openssl' executable not found in PATH")
-
     if ca_cert_path.exists():
         log.info("CA certificate already exists, re-using (%s)", ca_cert_path)
         return
@@ -193,10 +184,10 @@ def _generate_ca_cert(ca_key_path: Path, ca_cert_path: Path) -> None:
     ca_cert_path.parent.mkdir(parents=True, exist_ok=True)
 
     log.info("Generating CA key and certificate (%s, %s)", ca_key_path, ca_cert_path)
-    _run_openssl_cmd([openssl, "genrsa", "-out", ca_key_path])
+    _run_openssl_cmd(["openssl", "genrsa", "-out", ca_key_path])
     _run_openssl_cmd(
         [
-            openssl,
+            "openssl",
             "req",
             "-x509",
             "-new",
@@ -221,10 +212,6 @@ def _generate_cert_signed_by_own_ca(
     key_path: Path,
 ) -> None:
     """Generate key+cert signed by our own CA."""
-    openssl = shutil.which("openssl")
-    if not openssl:
-        raise RuntimeError("'openssl' executable not found in PATH")
-
     if key_path.exists() and cert_path.exists():
         log.info(
             "Server key and certificate already exists, re-using (%s, %s)",
@@ -240,7 +227,7 @@ def _generate_cert_signed_by_own_ca(
     )
     _run_openssl_cmd(
         [
-            openssl,
+            "openssl",
             "req",
             "-x509",
             "-newkey",

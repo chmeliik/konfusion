@@ -77,6 +77,7 @@ ignore = [
 ]
 "packages/konfusion-test-utils/*" = [
     "S603", # subprocess usage
+    "S607", # partial executable path
 ]
 
 [tool.ruff.lint.isort]

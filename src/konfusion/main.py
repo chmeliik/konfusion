@@ -111,6 +111,6 @@ def main() -> None:
         ["konfusion", *(cmd.__module__ for cmd in loaded_commands.values())],
     )
 
-    cmd_type: type[CliCommand] = args.cmd
+    cmd_type: type[CliCommand] = args.__konfusion_cmd__
     cmd = cmd_type.from_parsed_args(args)
     cmd.run()

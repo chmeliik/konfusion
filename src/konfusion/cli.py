@@ -37,9 +37,9 @@ class CliCommand(abc.ABC):
     >>> MyCommand.setup_parser(subcommands.add_parser("my-command"))
 
     >>> args = ap.parse_args(["my-command"])
-    >>> assert args.cmd is MyCommand
+    >>> assert args.__konfusion_cmd__ is MyCommand
 
-    >>> args.cmd.from_parsed_args(args).run()
+    >>> args.__konfusion_cmd__.from_parsed_args(args).run()
     Got arguments:
         self.flag = False
         self.maybe_string = None
@@ -49,7 +49,7 @@ class CliCommand(abc.ABC):
     ...     ["my-command", "--flag", "--maybe-string=foo", "--a-list", "1", "2"]
     ... )
 
-    >>> args.cmd.from_parsed_args(args).run()
+    >>> args.__konfusion_cmd__.from_parsed_args(args).run()
     Got arguments:
         self.flag = True
         self.maybe_string = 'foo'
@@ -88,7 +88,7 @@ class CliCommand(abc.ABC):
         parser.formatter_class = argparse.RawDescriptionHelpFormatter
         if cls.__doc__:
             parser.description = _dedent_docstring(cls.__doc__)
-        parser.set_defaults(cmd=cls)
+        parser.set_defaults(__konfusion_cmd__=cls)
 
     @classmethod
     def from_parsed_args(cls, args: argparse.Namespace) -> Self:

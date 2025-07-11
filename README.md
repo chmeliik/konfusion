@@ -74,6 +74,60 @@ source .venv/bin/activate
 pytest --stepwise -vvv
 ```
 
+### Integration tests
+
+Pre-requisites:
+
+* `podman`
+* `openssl`
+
+Run integration tests with:
+
+```bash
+make integration-test
+```
+
+Or directly using `pytest` (just copy the command from the Makefile).
+
+#### `konfusion-test-utils`
+
+Integration tests deploy an instance of the [Zot] container registry (a small, OCI-compliant
+registry implementation). The tests also set up TLS for the registry by generating
+a custom CA certificate and using it to sign Zot's server certificate.
+
+This makes working with the registry a little tricky, which is why we have a separate
+`konfusion-test-utils` package and CLI to make testing easier.
+
+Run the registry for local testing:
+
+```bash
+source .venv/bin/activate
+konfusion-test-utils run-zot-registry
+# see the output for further instructions
+```
+
+Run commands in the `konfusion` container image in a way that makes interacting
+with the registry straightworward:
+
+```bash
+konfusion-test-utils run-konfusion-container -- \
+  skopeo copy docker://busybox:latest docker://localhost:5000/busybox:latest
+
+konfusion-test-utils run-konfusion-container -- \
+  konfusion apply-tags --to-image localhost:5000/busybox:latest --tags test
+```
+
+By default, `run-konfusion-container` will rebuild the Konfusion container image
+every time. To use an existing image instead:
+
+```bash
+podman build -t localhost/konfusion:latest .
+export TEST_KONFUSION_CONTAINER_IMAGE=localhost/konfusion:latest
+
+konfusion-test-utils run-konfusion-container -- \
+  skopeo copy docker://busybox:latest docker://localhost:5000/busybox:latest
+```
+
 [uv]: https://docs.astral.sh/uv/
 [ty]: https://github.com/astral-sh/ty
 [ruff]: https://docs.astral.sh/ruff/
@@ -82,3 +136,4 @@ pytest --stepwise -vvv
 [pyright]: https://microsoft.github.io/pyright/#/
 [pytest]: https://docs.pytest.org/en/stable/
 [pytest-doctest]: https://docs.pytest.org/en/stable/how-to/doctest.html
+[Zot]: https://zotregistry.dev/

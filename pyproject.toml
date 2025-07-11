@@ -89,4 +89,4 @@ required-imports = [
 
 
 [tool.pytest.ini_options]
-addopts = ["--doctest-modules"]
+addopts = ["--doctest-modules", "--ignore=packages/konfusion-test-utils"]

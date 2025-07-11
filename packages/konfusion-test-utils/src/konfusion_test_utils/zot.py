@@ -26,6 +26,10 @@ class ZotAlreadyRunningError(ZotError):
     pass
 
 
+class ZotIsDownError(ZotError):
+    pass
+
+
 class ZotFailedToComeUpError(ZotError):
     pass
 
@@ -44,18 +48,26 @@ class Zot:
     def url(self) -> str:
         return f"https://{self.host}"
 
+    def check_status(self) -> None:
+        try:
+            with urllib.request.urlopen(
+                f"https://{self.host}/v2/",
+                context=self._ssl_context(),
+                timeout=1.0,
+            ):
+                pass
+        except urllib.error.URLError as e:
+            raise ZotIsDownError(repr(e)) from e
+
     def wait_till_up(self, timeout_seconds: float = 60.0) -> None:
-        ssl_context = ssl.create_default_context(cafile=self._config.ca_cert_path)
         start_time = time.time()
 
         while True:
             try:
-                with urllib.request.urlopen(
-                    f"https://{self.host}/v2/", context=ssl_context
-                ):
-                    return None
-            except urllib.error.URLError as e:
-                log.warning("Zot registry API not yet up: %r", e)
+                self.check_status()
+                return None
+            except ZotIsDownError as e:
+                log.warning("Zot registry API not yet up: %s", e)
 
             remaining_time = timeout_seconds - (time.time() - start_time)
             if remaining_time < 1:
@@ -115,6 +127,20 @@ class Zot:
             text=True,
             check=True,
         )
+
+    def kill(self) -> None:
+        subprocess.run(
+            ["podman", "kill", self._config.zot_container_name],
+            check=True,
+            stdout=subprocess.DEVNULL,
+        )
+
+    def _ssl_context(self) -> ssl.SSLContext:
+        if self._config.ca_cert_path.exists():
+            cafile = self._config.ca_cert_path
+        else:
+            cafile = None
+        return ssl.create_default_context(cafile=cafile)
 
 
 class _ZotConfig:

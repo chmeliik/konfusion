@@ -1,2 +1,12 @@
-*.egg-info
-__pycache__
+__pycache__/
+
+# Packaging
+*.egg-info/
+build/
+
+# Integration test data
+.testdata/
+
+# Environment
+.env
+.envrc

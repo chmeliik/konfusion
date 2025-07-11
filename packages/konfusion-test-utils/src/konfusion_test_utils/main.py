@@ -3,8 +3,10 @@ from __future__ import annotations
 import argparse
 import logging
 import sys
+from pathlib import Path
 
 from konfusion_test_utils.config import Config
+from konfusion_test_utils.konfusion_container import KonfusionContainer
 from konfusion_test_utils.zot import Zot, ZotAlreadyRunningError
 
 log = logging.getLogger(__name__)
@@ -57,6 +59,31 @@ def run_zot(args: argparse.Namespace) -> None:
     )
 
 
+def run_in_konfusion(args: argparse.Namespace) -> None:
+    cmd: list[str] = args.cmd
+    entrypoint: str | None = args.entrypoint
+
+    config = Config.load_from_env()
+
+    if config.konfusion_container_image:
+        konfusion = KonfusionContainer(config.konfusion_container_image, config)
+    else:
+        konfusion = KonfusionContainer.build_image(
+            image_name="localhost/konfusion:test",
+            konfusion_rootdir=Path.cwd(),
+            config=config,
+        )
+        log.info(
+            "To skip building the image, set TEST_KONFUSION_CONTAINER_IMAGE to an existing image"
+        )
+        log.info(
+            "E.g. 'export TEST_KONFUSION_CONTAINER_IMAGE=localhost/konfusion:latest'"
+        )
+
+    proc = konfusion.run_cmd(cmd, check=False, entrypoint=entrypoint)
+    sys.exit(proc.returncode)
+
+
 def main() -> None:
     """Run the CLI."""
     parser = argparse.ArgumentParser()
@@ -67,8 +94,16 @@ def main() -> None:
         help="run an OCI-compliant container registry in a podman container",
     )
     run_zot_cmd.add_argument("--restart", action="store_true")
-    run_zot_cmd.set_defaults(cmd=run_zot)
+    run_zot_cmd.set_defaults(fn=run_zot)
+
+    run_konfusion_cmd = subcommands.add_parser(
+        "run-konfusion-container",
+        help="run a command in the konfusion container image",
+    )
+    run_konfusion_cmd.add_argument("cmd", nargs="*", default=[])
+    run_konfusion_cmd.add_argument("--entrypoint")
+    run_konfusion_cmd.set_defaults(fn=run_in_konfusion)
 
     setup_logging()
     args = parser.parse_args()
-    args.cmd(args)
+    args.fn(args)

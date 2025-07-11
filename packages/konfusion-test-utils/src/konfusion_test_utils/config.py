@@ -14,6 +14,7 @@ class Config:
     zot_container_image: str
     zot_container_name: str
     zot_port: str
+    konfusion_container_image: str | None
 
     @classmethod
     def load_from_env(cls) -> Self:
@@ -31,6 +32,8 @@ class Config:
         )
         zot_port = os.getenv("TEST_ZOT_PORT") or "5000"
 
+        konfusion_container_image = os.getenv("TEST_KONFUSION_CONTAINER_IMAGE")
+
         return cls(
             ca_key_path=Path(ca_key_path),
             ca_cert_path=Path(ca_cert_path),
@@ -38,4 +41,5 @@ class Config:
             zot_container_image=zot_container_image,
             zot_container_name=zot_container_name,
             zot_port=zot_port,
+            konfusion_container_image=konfusion_container_image,
         )

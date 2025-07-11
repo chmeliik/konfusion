@@ -61,7 +61,8 @@ def run_zot(args: argparse.Namespace) -> None:
 
 def run_in_konfusion(args: argparse.Namespace) -> None:
     cmd: list[str] = args.cmd
-    entrypoint: str | None = args.entrypoint
+    tty: bool = args.tty
+    interactive: bool = args.interactive
 
     config = Config.load_from_env()
 
@@ -80,7 +81,13 @@ def run_in_konfusion(args: argparse.Namespace) -> None:
             "E.g. 'export TEST_KONFUSION_CONTAINER_IMAGE=localhost/konfusion:latest'"
         )
 
-    proc = konfusion.run_cmd(cmd, check=False, entrypoint=entrypoint)
+    podman_args = []
+    if tty:
+        podman_args.append("--tty")
+    if interactive:
+        podman_args.append("--interactive")
+
+    proc = konfusion.run_cmd(cmd, podman_args, check=False)
     sys.exit(proc.returncode)
 
 
@@ -101,7 +108,8 @@ def main() -> None:
         help="run a command in the konfusion container image",
     )
     run_konfusion_cmd.add_argument("cmd", nargs="*", default=[])
-    run_konfusion_cmd.add_argument("--entrypoint")
+    run_konfusion_cmd.add_argument("-t", "--tty", action="store_true")
+    run_konfusion_cmd.add_argument("-i", "--interactive", action="store_true")
     run_konfusion_cmd.set_defaults(fn=run_in_konfusion)
 
     setup_logging()

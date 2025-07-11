@@ -41,12 +41,13 @@ class KonfusionContainer:
     def run_cmd(
         self,
         cmd: Sequence[str | os.PathLike[str]],
+        podman_args: Sequence[str | os.PathLike[str]] = (),
         check: bool = True,
-        entrypoint: str | None = None,
     ) -> subprocess.CompletedProcess[bytes]:
         podman_cmd: list[str | os.PathLike[str]] = [
             "podman",
             "run",
+            *podman_args,
             "--rm",
             # allow the container to talk to the Zot registry running on localhost
             "--network=host",
@@ -60,8 +61,6 @@ class KonfusionContainer:
             podman_cmd.append(
                 f"--volume={self._config.ca_cert_path.resolve()}:{cert_path_in_container}"
             )
-        if entrypoint:
-            podman_cmd.append(f"--entrypoint={entrypoint}")
 
         podman_cmd.append(self.image_name)
         podman_cmd.extend(cmd)

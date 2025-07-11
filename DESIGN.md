@@ -130,6 +130,11 @@ With Python's argparse and its [`nargs`][nargs], we can parse this style of argu
 natively without any trouble.
 See [`packages/konfusion-build-commands/src/konfusion_build_commands/apply_tags.py`](packages/konfusion-build-commands/src/konfusion_build_commands/apply_tags.py).
 
+## Don't tightly couple with Tekton
+
+We should synergize, but we shouldn't tie ourselves specifically to Tekton.
+None of the functionality should rely on Tekton-specific behavior.
+
 [build-definitions]: https://github.com/konflux-ci/build-definitions
 [entrypoints]: https://packaging.python.org/en/latest/guides/creating-and-discovering-plugins/
 [buildah-task]: https://github.com/konflux-ci/build-definitions/tree/main/task/buildah

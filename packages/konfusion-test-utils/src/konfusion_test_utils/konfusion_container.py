@@ -53,6 +53,9 @@ class KonfusionContainer:
         ]
 
         if self._config.ca_cert_path.exists():
+            # Note: this cert location is undocumented and probably doesn't work for all tools.
+            # But it is what most Konflux Tekton Tasks use. So if doesn't work for our tests,
+            #   it probably won't work for the tasks either.
             cert_path_in_container = "/etc/pki/tls/certs/ca-custom-bundle.crt"
             podman_cmd.append(
                 f"--volume={self._config.ca_cert_path.resolve()}:{cert_path_in_container}"

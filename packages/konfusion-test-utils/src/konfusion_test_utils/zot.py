@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import logging
+import shutil
 import ssl
 import subprocess
 import time
@@ -78,7 +79,7 @@ class Zot:
 
             time.sleep(1)
 
-    def run(self, restart: bool = False) -> None:
+    def run(self, *, restart: bool = False, clean: bool = False) -> None:
         """Run an instance of the Zot container registry in a podman container."""
         proc = subprocess.run(
             ["podman", "container", "exists", self._config.zot_container_name],
@@ -89,6 +90,15 @@ class Zot:
             raise ZotAlreadyRunningError()
 
         self._config.zot_root_dir.mkdir(parents=True, exist_ok=True)
+
+        # Clean storage directory unless explicitly configured to reuse
+        storage_dir = self._config.zot_root_dir / "registry"
+        if storage_dir.exists():
+            if clean:
+                log.info("Cleaning Zot storage directory: %s", storage_dir)
+                shutil.rmtree(storage_dir)
+            else:
+                log.info("Reusing Zot storage directory: %s", storage_dir)
 
         zot_config = _ZotConfig(self._config)
 

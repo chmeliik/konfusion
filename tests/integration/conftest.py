@@ -31,7 +31,7 @@ def zot_registry(config: UtilsConfig) -> Generator[Zot]:
         yield zot
     except ZotIsDownError:
         log.info("Starting new Zot instance")
-        zot.run(restart=True)
+        zot.run(restart=True, clean=config.clean_registry_storage)
         zot.wait_till_up()
         yield zot
         log.info("Stopping Zot instance")

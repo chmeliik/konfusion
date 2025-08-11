@@ -25,12 +25,19 @@ def setup_logging() -> None:
 
 def run_zot(args: argparse.Namespace) -> None:
     restart: bool = args.restart
+    clean: bool = args.clean
 
     config = Config.load_from_env()
     zot = Zot(config)
 
+    if config.clean_registry_storage and not clean:
+        log.warning("Ignoring TEST_CLEAN_REGISTRY_STORAGE setting")
+        log.warning(
+            "If you'd like to clean the storage, use the --clean flag (together with --restart)"
+        )
+
     try:
-        zot.run(restart=restart)
+        zot.run(restart=restart, clean=clean)
     except ZotAlreadyRunningError:
         print(
             f"Zot container (name={config.zot_container_name}) is already running.",
@@ -87,6 +94,7 @@ def main() -> None:
         help="run an OCI-compliant container registry in a podman container",
     )
     run_zot_cmd.add_argument("--restart", action="store_true")
+    run_zot_cmd.add_argument("--clean", action="store_true")
     run_zot_cmd.set_defaults(fn=run_zot)
 
     run_konfusion_cmd = subcommands.add_parser(

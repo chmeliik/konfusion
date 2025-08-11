@@ -25,7 +25,7 @@ test: .venv
 	pytest --ignore=tests/integration
 
 .PHONY: integration-test
-integration-test:
+integration-test: .venv
 	pytest tests/integration --log-cli-level DEBUG
 
 .PHONY: requirements.txt

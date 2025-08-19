@@ -16,7 +16,7 @@ log = logging.getLogger(__name__)
 
 
 # The $HOME of the default user in the konfusion container
-HOME = "/opt/app-root/src"
+HOME = "/home/default"
 
 
 class KonfusionContainer:

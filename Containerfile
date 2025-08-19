@@ -22,4 +22,7 @@ COPY --from=build-python /app/konfusion/venv /app/konfusion/venv
 
 RUN ln -s /app/konfusion/venv/bin/konfusion /usr/local/bin/konfusion
 
+ENV HOME=/home/default
+RUN usermod --move-home --home "$HOME" default
+
 USER default

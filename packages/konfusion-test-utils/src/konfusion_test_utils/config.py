@@ -14,8 +14,11 @@ class Config:
     zot_container_image: str
     zot_container_name: str
     zot_port: str
+    zot_username: str
+    zot_password: str
     konfusion_container_image: str | None
     clean_registry_storage: bool
+    containers_auth_json_path: Path
 
     @classmethod
     def load_from_env(cls) -> Self:
@@ -32,11 +35,18 @@ class Config:
             os.getenv("TEST_ZOT_CONTAINER_NAME") or "konfusion-zot-registry"
         )
         zot_port = os.getenv("TEST_ZOT_PORT") or "5000"
+        zot_username = os.getenv("TEST_ZOT_USERNAME") or "konfusion"
+        zot_password = os.getenv("TEST_ZOT_PASSWORD") or "confusion"
 
         konfusion_container_image = os.getenv("TEST_KONFUSION_CONTAINER_IMAGE")
 
         clean_registry_storage = (
             os.getenv("TEST_CLEAN_REGISTRY_STORAGE", "true").lower() != "false"
+        )
+
+        containers_auth_json_path = (
+            os.getenv("TEST_CONTAINERS_AUTH_JSON_PATH")
+            or ".testdata/containers-auth.json"
         )
 
         return cls(
@@ -46,6 +56,9 @@ class Config:
             zot_container_image=zot_container_image,
             zot_container_name=zot_container_name,
             zot_port=zot_port,
+            zot_username=zot_username,
+            zot_password=zot_password,
             konfusion_container_image=konfusion_container_image,
             clean_registry_storage=clean_registry_storage,
+            containers_auth_json_path=Path(containers_auth_json_path),
         )

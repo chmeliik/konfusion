@@ -25,6 +25,7 @@ def config() -> UtilsConfig:
 @pytest.fixture(scope="session")
 def zot_registry(config: UtilsConfig) -> Generator[Zot]:
     zot = Zot(config)
+    zot.write_containers_auth_json(config.containers_auth_json_path)
     try:
         zot.check_status()
         log.info("Using existing Zot instance at %s", zot.url)

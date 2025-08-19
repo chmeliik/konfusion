@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import base64
 import json
 import logging
 import shutil
@@ -11,6 +12,7 @@ import urllib.request
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
+import bcrypt
 from konfusion_test_utils.config import Config
 
 if TYPE_CHECKING:
@@ -50,9 +52,11 @@ class Zot:
         return f"https://{self.host}"
 
     def check_status(self) -> None:
+        req = urllib.request.Request(f"https://{self.host}/v2/")
+        req.add_header("Authorization", f"Basic {self._basic_auth()}")
         try:
-            with urllib.request.urlopen(
-                f"https://{self.host}/v2/",
+            with urllib.request.urlopen(  # noqa: S310 # scheme is always https
+                req,
                 context=self._ssl_context(),
                 timeout=1.0,
             ):
@@ -112,6 +116,8 @@ class Zot:
             key_path=zot_config.zot_key_path(),
         )
 
+        zot_config.zot_htpasswd_path().write_text(self._htpasswd_content())
+
         zot_config_json = json.dumps(zot_config.zot_config(), indent=2)
         zot_config.zot_config_path().write_text(zot_config_json + "\n")
 
@@ -145,6 +151,31 @@ class Zot:
             stdout=subprocess.DEVNULL,
         )
 
+    def write_containers_auth_json(self, path: Path) -> None:
+        """Write a containers-auth.json file to the specified path."""
+        auth_json = {
+            "auths": {
+                self.host: {
+                    "auth": self._basic_auth(),
+                },
+            },
+        }
+        log.info("Writing Zot auth to %s", path)
+        with path.open("w") as f:
+            json.dump(auth_json, f)
+            f.write("\n")
+
+    def _basic_auth(self) -> str:
+        return base64.b64encode(
+            f"{self._config.zot_username}:{self._config.zot_password}".encode()
+        ).decode()
+
+    def _htpasswd_content(self) -> str:
+        bcrypted_password = bcrypt.hashpw(
+            self._config.zot_password.encode(), bcrypt.gensalt()
+        ).decode()
+        return f"{self._config.zot_username}:{bcrypted_password}"
+
     def _ssl_context(self) -> ssl.SSLContext:
         if self._config.ca_cert_path.exists():
             cafile = self._config.ca_cert_path
@@ -166,6 +197,9 @@ class _ZotConfig:
 
     def zot_config_path(self, *, in_container: bool = False) -> Path:
         return self._zot_path("config.json", in_container=in_container)
+
+    def zot_htpasswd_path(self, *, in_container: bool = False) -> Path:
+        return self._zot_path("htpasswd", in_container=in_container)
 
     def _zot_path(self, filename: str, in_container: bool) -> Path:
         if in_container:
@@ -190,6 +224,12 @@ class _ZotConfig:
                 "tls": {
                     "cert": self.zot_cert_path(in_container=True).as_posix(),
                     "key": self.zot_key_path(in_container=True).as_posix(),
+                },
+                # https://zotregistry.dev/v2.1.7/articles/authn-authz/#htpasswd
+                "auth": {
+                    "htpasswd": {
+                        "path": self.zot_htpasswd_path(in_container=True).as_posix(),
+                    }
                 },
             },
             "log": {

@@ -24,10 +24,11 @@ konfusion = "konfusion.main:main"
 
 [dependency-groups]
 dev = [
+    "bcrypt>=4.3.0",
     "pyright>=1.1.402",
     "pytest>=8.4.1",
     "ruff>=0.12.1",
-    "konfusion-test-utils"
+    "konfusion-test-utils",
 ]
 
 

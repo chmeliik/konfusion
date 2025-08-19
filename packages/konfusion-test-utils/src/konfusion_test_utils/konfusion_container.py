@@ -15,6 +15,10 @@ if TYPE_CHECKING:
 log = logging.getLogger(__name__)
 
 
+# The $HOME of the default user in the konfusion container
+HOME = "/opt/app-root/src"
+
+
 class KonfusionContainer:
     def __init__(self, image_name: str, config: Config) -> None:
         self._image_name = image_name
@@ -78,14 +82,19 @@ class KonfusionContainer:
             "--network=host",
         ]
 
-        if self._config.ca_cert_path.exists():
+        mounts = [
             # Note: this cert location is undocumented and probably doesn't work for all tools.
-            # But it is what most Konflux Tekton Tasks use. So if doesn't work for our tests,
+            # But it is what most Konflux Tekton Tasks use. So if it doesn't work for our tests,
             #   it probably won't work for the tasks either.
-            cert_path_in_container = "/etc/pki/tls/certs/ca-custom-bundle.crt"
-            podman_cmd.append(
-                f"--volume={self._config.ca_cert_path.resolve()}:{cert_path_in_container}"
-            )
+            (self._config.ca_cert_path, "/etc/pki/tls/certs/ca-custom-bundle.crt"),
+            (
+                self._config.containers_auth_json_path,
+                f"{HOME}/.config/containers/auth.json",
+            ),
+        ]
+        for src, dest in mounts:
+            if src.exists():
+                podman_cmd.append(f"--volume={src.resolve()}:{dest}")
 
         podman_cmd.append(self.image_name)
         podman_cmd.extend(cmd)

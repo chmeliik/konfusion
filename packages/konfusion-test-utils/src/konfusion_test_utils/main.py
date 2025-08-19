@@ -47,6 +47,8 @@ def run_zot(args: argparse.Namespace) -> None:
         )
         sys.exit(1)
 
+    zot.write_containers_auth_json(config.containers_auth_json_path)
+
     ca_path = config.ca_cert_path
     print(
         f"Zot container running (name={config.zot_container_name})",
@@ -55,13 +57,18 @@ def run_zot(args: argparse.Namespace) -> None:
         "The data will persist between restarts. To start fresh, remove the directory.",
         "",
         f"Access the web UI at {zot.url}",
+        f"  Username: {config.zot_username}",
+        f"  Password: {config.zot_password}",
         f"Note: you will need to ignore the security warning or import {ca_path} into your browser.",
         "",
         "To interact with the registry using skopeo, use e.g.:",
-        f"  skopeo copy --dest-cert-dir {ca_path.parent} containers-storage:{config.zot_container_image} docker://{zot.host}/zot:test",
+        "  skopeo copy \\",
+        f"    --authfile {config.containers_auth_json_path} \\",
+        f"    --dest-cert-dir {ca_path.parent} \\",
+        f"    containers-storage:{config.zot_container_image} docker://{zot.host}/zot:test",
         "",
         "To communicate with the registry API directly, use e.g.:",
-        f"  curl --fail --cacert {ca_path} {zot.url}/v2/",
+        f"  curl --fail --user {config.zot_username}:{config.zot_password} --cacert {ca_path} {zot.url}/v2/",
         sep="\n",
     )
 

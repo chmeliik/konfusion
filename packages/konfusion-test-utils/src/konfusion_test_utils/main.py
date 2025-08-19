@@ -81,7 +81,7 @@ def run_in_konfusion(args: argparse.Namespace) -> None:
     config = Config.load_from_env()
     konfusion = KonfusionContainer.get(config, konfusion_rootdir=Path.cwd())
 
-    podman_args = []
+    podman_args: list[str] = []
     if tty:
         podman_args.append("--tty")
     if interactive:

@@ -96,7 +96,7 @@ def get_parser(loaded_commands: dict[str, type[CliCommand]]) -> argparse.Argumen
 def main() -> None:
     """Run Konfusion."""
     # Setup logging first so that we can log messages when we fail to load a command
-    setup_logging(logging.INFO, ["konfusion"])
+    setup_logging(logging.INFO)
     loaded_commands = load_commands()
 
     parser = get_parser(loaded_commands)
@@ -108,7 +108,7 @@ def main() -> None:
     # Re-setup logging for konfusion and all loaded modules after parsing args
     setup_logging(
         args.log_level,
-        ["konfusion", *(cmd.__module__ for cmd in loaded_commands.values())],
+        (cmd.__module__ for cmd in loaded_commands.values()),
     )
 
     cmd_type: type[CliCommand] = args.__konfusion_cmd__

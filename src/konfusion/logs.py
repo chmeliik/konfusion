@@ -23,12 +23,12 @@ class _ISOTimeFormatter(logging.Formatter):
             return dt.strftime(datefmt)
 
 
-def setup_logging(level: int, modules: Iterable[str]) -> None:
-    """Set up logging for the specified modules."""
+def setup_logging(level: int, additional_modules: Iterable[str] = ()) -> None:
+    """Set up logging for default modules and the specified additional modules."""
     handler = logging.StreamHandler()
     handler.setFormatter(_ISOTimeFormatter(LOG_FORMAT))
 
-    for module in modules:
+    for module in ["konfusion", *additional_modules]:
         logger = logging.getLogger(module)
         logger.setLevel(level)
 

@@ -13,7 +13,9 @@ license = {text = "Apache-2.0"}
 authors = [
     {name = "Adam Cmiel", email = "acmiel@redhat.com"},
 ]
-dependencies = []
+dependencies = [
+    "stamina>=25.1.0",
+]
 
 [project.optional-dependencies]
 build-commands = ["konfusion-build-commands"]

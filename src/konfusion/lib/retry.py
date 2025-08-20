@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging
 from collections.abc import Callable
 from typing import TYPE_CHECKING
 
@@ -7,6 +8,25 @@ import stamina
 
 if TYPE_CHECKING:
     import datetime as dt
+
+    from stamina.typing import RetryDetails
+
+log = logging.getLogger(__name__)
+
+
+def _log_retries(details: RetryDetails) -> None:
+    log.warning(
+        "%s: attempt %d failed, retrying in %f seconds: %s: %s",
+        details.name,
+        details.retry_num,
+        details.wait_for,
+        type(details.caused_by).__name__,
+        str(details.caused_by),
+    )
+
+
+stamina.instrumentation.set_on_retry_hooks([_log_retries])
+
 
 type ExcOrPredicate = (
     type[Exception] | tuple[type[Exception], ...] | Callable[[Exception], bool]

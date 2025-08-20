@@ -7,25 +7,25 @@ default: .venv
 	uv sync --group dev --extra build-commands --python $(PYTHON_VERSION)
 
 .PHONY: check
-check: .venv
+check:
 	uv run ruff check
 	uv run ruff format --check --diff
 	uv run pyright
 
 .PHONY: format
-format: .venv
+format:
 	uv run ruff format
 
 .PHONY: autofix
-autofix: .venv
+autofix:
 	uv run ruff check --fix
 
 .PHONY: test
-test: .venv
+test:
 	uv run pytest --ignore=tests/integration
 
 .PHONY: integration-test
-integration-test: .venv
+integration-test:
 	uv run pytest tests/integration --log-cli-level DEBUG
 
 .PHONY: requirements.txt

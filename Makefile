@@ -31,3 +31,7 @@ integration-test:
 .PHONY: requirements.txt
 requirements.txt:
 	uv export --frozen --all-packages --no-dev --no-emit-workspace -o requirements.txt
+
+.PHONY: requirements-build.txt
+requirements-build.txt:
+	uv run pybuild-deps compile -o requirements-build.txt

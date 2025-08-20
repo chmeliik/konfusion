@@ -31,6 +31,8 @@ dev = [
     "pytest>=8.4.1",
     "ruff>=0.12.1",
     "konfusion-test-utils",
+    "pybuild-deps>=0.5.0",
+    "pip<25.1",  # pybuild-deps==0.5.0 doesn't work with pip>=25.1
 ]
 
 

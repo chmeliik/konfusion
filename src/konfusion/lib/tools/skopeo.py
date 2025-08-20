@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import logging
+import subprocess
 from typing import TYPE_CHECKING, Self
 
+from konfusion.lib.retry import retry
 from konfusion.lib.tools import CliTool
 
 if TYPE_CHECKING:
@@ -19,6 +21,16 @@ class Skopeo(CliTool):
         """Find skopeo in PATH."""
         return super().find_by_name("skopeo")
 
+    @staticmethod
+    def _is_retriable_skopeo_erorr(exc: Exception) -> bool:
+        if not isinstance(exc, subprocess.CalledProcessError):
+            return False
+        # https://www.mankier.com/1/skopeo#Exit_Status
+        #   1 => generic error
+        #   2 => image does not exist
+        return exc.returncode == 1
+
+    @retry(on=_is_retriable_skopeo_erorr)
     def copy(self, source: ImageRef, dest: ImageRef, *additional_args: str) -> None:
         """Run 'skopeo copy ...'."""
         self.run_with_logging(
@@ -30,6 +42,7 @@ class Skopeo(CliTool):
             ]
         )
 
+    @retry(on=_is_retriable_skopeo_erorr)
     def inspect_format(self, image: ImageRef, format: str) -> str:
         """Run 'skopeo inspect --format ...'."""
         return self.run_with_logging(

@@ -32,7 +32,8 @@ dev = [
     "ruff>=0.12.1",
     "konfusion-test-utils",
     "pybuild-deps>=0.5.0",
-    "pip<25.1",  # pybuild-deps==0.5.0 doesn't work with pip>=25.1
+    "pip<25.1", # pybuild-deps==0.5.0 doesn't work with pip>=25.1
+    "rpm-lockfile-prototype",
 ]
 
 
@@ -40,6 +41,7 @@ dev = [
 konfusion = {workspace = true}
 konfusion-build-commands = {workspace = true}
 konfusion-test-utils = {workspace = true}
+rpm-lockfile-prototype = { url = "https://github.com/konflux-ci/rpm-lockfile-prototype/archive/refs/tags/v0.17.0.tar.gz" }
 
 [tool.uv.workspace]
 members = ["packages/*"]

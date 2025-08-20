@@ -35,3 +35,10 @@ requirements.txt:
 .PHONY: requirements-build.txt
 requirements-build.txt:
 	uv run pybuild-deps compile -o requirements-build.txt
+
+.PHONY: rpms.lock.yaml
+rpms.lock.yaml:
+	# rpm-lockfile-prototype depends on dnf bindings (the python3-dnf package on fedora)
+	#   => need --system-site-packages
+	uv venv --allow-existing --system-site-packages .rpm-lockfile-prototype-venv
+	UV_PROJECT_ENVIRONMENT=.rpm-lockfile-prototype-venv uv run rpm-lockfile-prototype rpms.in.yaml

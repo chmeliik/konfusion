@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi9/python-312:latest@sha256:81ecc946acac7523ab3c7fe10ca4cf7db29bb462c2ab5c6c57c7b57d39f38b19 AS build-python
+FROM registry.access.redhat.com/ubi9/python-312:latest@sha256:83b01cf47b22e6ce98a0a4802772fb3d4b7e32280e3a1b7ffcd785e01956e1cb AS build-python
 
 WORKDIR /app/konfusion
 
@@ -11,7 +11,7 @@ RUN venv/bin/pip install --no-deps . && \
     venv/bin/pip install --no-deps ./packages/konfusion-build-commands
 
 
-FROM registry.access.redhat.com/ubi9/python-312:latest@sha256:81ecc946acac7523ab3c7fe10ca4cf7db29bb462c2ab5c6c57c7b57d39f38b19
+FROM registry.access.redhat.com/ubi9/python-312:latest@sha256:83b01cf47b22e6ce98a0a4802772fb3d4b7e32280e3a1b7ffcd785e01956e1cb
 
 USER root
 

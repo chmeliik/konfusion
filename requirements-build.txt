@@ -32,7 +32,7 @@ setuptools-scm==9.2.0
     #   hatch-vcs
     #   pluggy
     #   tenacity
-trove-classifiers==2025.8.6.13
+trove-classifiers==2025.8.26.11
     # via hatchling
 
 # The following packages are considered to be unsafe in a requirements file:

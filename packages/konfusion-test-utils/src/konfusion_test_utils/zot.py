@@ -161,6 +161,7 @@ class Zot:
             },
         }
         log.info("Writing Zot auth to %s", path)
+        path.parent.mkdir(parents=True, exist_ok=True)
         with path.open("w") as f:
             json.dump(auth_json, f)
             f.write("\n")

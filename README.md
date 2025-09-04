@@ -128,6 +128,25 @@ konfusion-test-utils run-konfusion-container -- \
   skopeo copy docker://busybox:latest docker://localhost:5000/busybox:latest
 ```
 
+#### Tips and tricks
+
+##### Registry reuse
+
+By default, when you run integration tests, they clean up registry storage,
+run a registry instance for the tests and then stop the instance again.
+
+If you would like to inspect the state of the registry after the tests, run
+`konfusion-test-utils run-zot-registry` and log in to the UI (find the URL and
+the credentials in the output of this command).
+
+Before running tests again, stop the registry (`podman kill konfusion-zot-registry`)
+so that the tests can use a clean instance.
+
+If you keep the registry running, tests will reuse your instance without cleaning
+the storage. This can be useful if you'd like to do some manual setup while working
+on tests, for example. But always make sure the tests work when starting from a clean
+storage before you submit a pull request.
+
 [uv]: https://docs.astral.sh/uv/
 [ty]: https://github.com/astral-sh/ty
 [ruff]: https://docs.astral.sh/ruff/

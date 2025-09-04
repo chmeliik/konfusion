@@ -147,6 +147,35 @@ the storage. This can be useful if you'd like to do some manual setup while work
 on tests, for example. But always make sure the tests work when starting from a clean
 storage before you submit a pull request.
 
+### Dependency management
+
+The primary package manager for this project is [`uv`][uv]. Add a new dependency
+using:
+
+```bash
+uv add {dependency}
+
+# if the dependency is for development/testing
+uv add --group dev {dependency}
+```
+
+Konfusion builds its container image [hermetically in Konflux][konflux-hermetic],
+which requires extra lockfiles on top of the primary `uv.lock`.
+
+Whenever `uv.lock` changes, re-generate `requirements[-build].txt`:
+
+```bash
+make requirements.txt
+make requirements-build.txt
+```
+
+If you need to install a new package in the Containerfile using `dnf`, first
+add it to `rpms.in.yaml` and then re-generate `rpms.lock.yaml`:
+
+```bash
+make rpms.lock.yaml
+```
+
 [uv]: https://docs.astral.sh/uv/
 [ty]: https://github.com/astral-sh/ty
 [ruff]: https://docs.astral.sh/ruff/
@@ -156,3 +185,4 @@ storage before you submit a pull request.
 [pytest]: https://docs.pytest.org/en/stable/
 [pytest-doctest]: https://docs.pytest.org/en/stable/how-to/doctest.html
 [Zot]: https://zotregistry.dev/
+[konflux-hermetic]: https://konflux-ci.dev/docs/building/hermetic-builds/

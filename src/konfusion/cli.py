@@ -7,13 +7,13 @@ import textwrap
 from typing import Self
 
 
-@dataclasses.dataclass(frozen=True, kw_only=True)
+@dataclasses.dataclass(kw_only=True)
 class CliCommand(abc.ABC):
     """Base class for CLI commands.
 
     Example usage:
 
-    >>> @dataclasses.dataclass(frozen=True, kw_only=True)
+    >>> @dataclasses.dataclass(kw_only=True)
     ... class MyCommand(CliCommand):
     ...     flag: bool
     ...     maybe_string: str | None

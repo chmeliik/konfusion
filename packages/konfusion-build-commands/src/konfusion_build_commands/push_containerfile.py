@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 log = logging.getLogger(__name__)
 
 
-@dataclass(frozen=True, kw_only=True)
+@dataclass(kw_only=True)
 class PushContainerfile(CliCommand):
     """Discover Containerfile from source code and attach it to container image."""
 

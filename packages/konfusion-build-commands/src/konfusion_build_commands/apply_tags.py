@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 log = logging.getLogger(__name__)
 
 
-@dataclass(frozen=True, kw_only=True)
+@dataclass(kw_only=True)
 class ApplyTags(CliCommand):
     """Apply tags to a container image in a registry.
 
@@ -35,6 +35,9 @@ class ApplyTags(CliCommand):
     tags: list[str]
     image: ImageRef
 
+    def __post_init__(self) -> None:
+        self._skopeo = Skopeo.find_in_path()
+
     @classmethod
     def setup_parser(cls, parser: argparse.ArgumentParser) -> None:
         super().setup_parser(parser)
@@ -44,12 +47,10 @@ class ApplyTags(CliCommand):
         )
 
     def run(self) -> None:
-        skopeo = Skopeo.find_in_path()
-
         def apply_tag(tag: str) -> None:
             dest_image = self.image.replace(tag=tag, digest=None)
             log.info("Tag %s -> %s", self.image, dest_image)
-            skopeo.copy(self.image, dest_image, "--multi-arch=index-only")
+            self._skopeo.copy(self.image, dest_image, "--multi-arch=index-only")
 
         if self.tags:
             log.info("Applying tags from CLI argument")
@@ -58,7 +59,7 @@ class ApplyTags(CliCommand):
 
         log.info("Inspecting %s to check for konflux.additional-tags label", self.image)
 
-        additional_tags_label = skopeo.inspect_format(
+        additional_tags_label = self._skopeo.inspect_format(
             self.image, format='{{ index .Labels "konflux.additional-tags" }}'
         )
         additional_tags = self._parse_additional_tags_label(additional_tags_label)

@@ -14,7 +14,7 @@ hatch-fancy-pypi-readme==25.1.0
     # via stamina
 hatch-vcs==0.5.0
     # via stamina
-hatchling==1.27.0
+hatchling==1.28.0
     # via
     #   hatch-fancy-pypi-readme
     #   hatch-vcs

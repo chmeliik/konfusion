@@ -25,7 +25,7 @@ class Config:
         # Different directories for CA cert and CA key to make working with skopeo easier
         # (skopeo's --(src|dest)-cert-dir option expects a directory with only the CA cert)
         ca_cert_path = os.getenv("TEST_CA_CERT_PATH") or ".testdata/ca_cert/ca.crt"
-        ca_key_path = os.getenv("TEST_CA_CERT_DIR") or ".testdata/ca_key/ca.key"
+        ca_key_path = os.getenv("TEST_CA_KEY_PATH") or ".testdata/ca_key/ca.key"
 
         zot_root_dir = os.getenv("TEST_ZOT_ROOT_DIR") or ".testdata/zot"
         zot_container_image = (

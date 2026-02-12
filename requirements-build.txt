@@ -4,7 +4,7 @@
 #
 #    pybuild-deps compile --output-file=requirements-build.txt
 #
-calver==2025.4.17
+calver==2025.10.20
     # via trove-classifiers
 flit-core==3.12.0
     # via
